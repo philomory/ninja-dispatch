@@ -29,7 +29,20 @@ class User < ActiveRecord::Base
     errors.add_to_base("Too many ninjas") if ninjas.count > 3
   end
 
+  # This is used so that url helpers use the login rather than the id.
+  def to_param
+    login
+  end
   
+  # This makes find_by_login work like find in terms of errors.
+  def self.find_by_login(passed_value,*args)
+    if user = super
+      p user
+      return user
+    else
+      raise ::ActiveRecord::RecordNotFound, "Couldn't find User with Name='#{passed_value}'"
+    end
+  end
 
   # HACK HACK HACK -- how to do attr_accessible from here?
   # prevents a user from submitting a crafted form that bypasses activation

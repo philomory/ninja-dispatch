@@ -4,6 +4,8 @@ ActionController::Routing::Routes.draw do |map|
   map.login '/login', :action => 'new', :controller => 'sessions'
   map.register '/register', :action => 'create', :controller => 'users'
   map.signup '/signup', :action => 'new', :controller => 'users'
+  
+  # Here I'm repurposing :id, interpreting it as :login instead.
   map.resources :users, {:member=>{:purge=>:delete, :unsuspend=>:put, :suspend=>:put}}
 
   map.resource :session
