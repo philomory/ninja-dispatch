@@ -1,0 +1,5 @@
+style: glob
+.DS_Store
+config/initializers/site_keys.rb
+config/database.yml
+config/email.yml
