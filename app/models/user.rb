@@ -6,9 +6,6 @@ class User < ActiveRecord::Base
   include Authentication::ByCookieToken
   include Authorization::AasmRoles
   
-  has_many :ninja
-  
-
   validates_presence_of     :login
   validates_length_of       :login,    :within => 3..40
   validates_uniqueness_of   :login
@@ -21,6 +18,16 @@ class User < ActiveRecord::Base
   validates_length_of       :email,    :within => 6..100 #r@a.wk
   validates_uniqueness_of   :email
   validates_format_of       :email,    :with => Authentication.email_regex, :message => Authentication.bad_email_message
+
+  has_many :ninjas, :conditions => {:active => true}
+  has_many :ancestors, :class_name => "Ninja", :conditions => {:active => :false}
+  has_many :past_and_present_ninjas, :class_name => "Ninja"
+  
+  validate :room_for_more?
+  
+  def room_for_more?(*args)
+    errors.add_to_base("Too many ninjas") if ninjas.count > 3
+  end
 
   
 
