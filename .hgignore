@@ -3,3 +3,4 @@ style: glob
 config/initializers/site_keys.rb
 config/database.yml
 config/email.yml
+log/*
