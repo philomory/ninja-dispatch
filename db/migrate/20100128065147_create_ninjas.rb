@@ -3,6 +3,7 @@ class CreateNinjas < ActiveRecord::Migration
     create_table :ninjas do |t|
       t.string :name
       t.boolean :active
+      t.references :user
 
       t.timestamps
     end
