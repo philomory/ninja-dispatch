@@ -22,6 +22,9 @@ Rails::Initializer.run do |config|
   config.gem 'rubyist-aasm', :version => '~> 2.0.2', :lib => 'aasm', :source => "http://gems.github.com"
   config.gem 'tlsmail'
   config.gem 'restful_authentication'
+  config.gem 'Markaby', :lib => 'markaby', :version => '~> 0.6.5'
+
+  config.gem 'haml'
   
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
@@ -43,3 +46,6 @@ Rails::Initializer.run do |config|
   # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
   # config.i18n.default_locale = :de
 end
+
+require 'markaby/rails'
+require 'markaby/rails/current'
