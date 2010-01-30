@@ -8,6 +8,7 @@ class UsersController < ApplicationController
   # render new.html.erb
   def new
     @user = User.new
+    render :layout => 'application'
   end
  
   def create

@@ -1,0 +1,5 @@
+<%  
+	widget = Views::Layouts::Application.new :parent => self
+	widget.template_content = yield
+    widget.to_s
+%>
