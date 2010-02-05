@@ -20,15 +20,19 @@ class User < ActiveRecord::Base
   validates_format_of       :email,    :with => Authentication.email_regex, :message => Authentication.bad_email_message
 
   has_many :ninjas, :conditions => {:active => true}
-  has_many :ancestors, :class_name => "Ninja", :conditions => {:active => :false}
+  has_many :ancestors, :class_name => "Ninja", :conditions => {:active => false}
   has_many :past_and_present_ninjas, :class_name => "Ninja"
   
-  validate :room_for_more?
+  validate :ninja_overflow
   
-  def room_for_more?(*args)
+  def ninja_overflow(*args)
     errors.add_to_base("Too many ninjas") if ninjas.count > 3
   end
-
+  
+  def room_for_more?
+    return (ninjas.count < 3)
+  end
+  
   # This is used so that url helpers use the login rather than the id.
   def to_param
     login

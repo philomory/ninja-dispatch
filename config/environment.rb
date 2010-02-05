@@ -23,6 +23,9 @@ Rails::Initializer.run do |config|
   config.gem 'tlsmail'
   config.gem 'restful_authentication'
   config.gem 'erector'
+  config.gem 'will_paginate'
+  config.gem 'sortable_table', :lib => 'sortable'
+
   
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
@@ -44,3 +47,5 @@ Rails::Initializer.run do |config|
   # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
   # config.i18n.default_locale = :de
 end
+
+require_dependency 'sortable_helper'

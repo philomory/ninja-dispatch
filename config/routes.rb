@@ -5,8 +5,19 @@ ActionController::Routing::Routes.draw do |map|
   map.register '/register', :action => 'create', :controller => 'users'
   map.signup '/signup', :action => 'new', :controller => 'users'
   
+  # this is the options hash passed to map.resource :users, in a seperate line for readability.
+  user_hash = {:except => :new, :member=>{:purge=>:delete, :unsuspend=>:put, :suspend=>:put}}
+  
   # Here I'm repurposing :id, interpreting it as :login instead.
-  map.resources :users, {:member=>{:purge=>:delete, :unsuspend=>:put, :suspend=>:put}}
+  map.resources :users, user_hash do |user|
+    user.resources :ninjas,:member      => {:retire    => :put},
+                           :shallow     => true,
+                           :except      => :edit
+                           
+    user.ancestors '/ancestors', :controller => :users, :action => :ancestors
+    user.ancestor  '/ancestors/:id', :controller => :ninjas, :action => :show              
+  end
+
 
   map.resource :session
 
@@ -49,6 +60,6 @@ ActionController::Routing::Routes.draw do |map|
   # Install the default routes as the lowest priority.
   # Note: These default routes make all actions in every controller accessible via GET requests. You should
   # consider removing or commenting them out if you're using named routes and resources.
-  map.connect ':controller/:action/:id'
-  map.connect ':controller/:action/:id.:format'
+  # map.connect ':controller/:action/:id'
+  # map.connect ':controller/:action/:id.:format'
 end

@@ -1,14 +1,19 @@
 class UsersController < ApplicationController
-
+  sortable_table Ninja; undef :index
   # Protect these actions behind an admin login
-  # before_filter :admin_required, :only => [:suspend, :unsuspend, :destroy, :purge]
-  before_filter :find_user, :only => [:suspend, :unsuspend, :destroy, :purge, :show]
+  before_filter :admin_required, :only => [:suspend, :unsuspend, :destroy, :purge]
+  before_filter :find_user, :only => [:suspend, :unsuspend, :destroy, :purge, :show, :ancestors]
   
 
   # render new.html.erb
   def new
     @user = User.new
     render :layout => 'application'
+  end
+
+  def ancestors
+    @ancestors = @user.ancestors
+    get_sorted_objects(params,:objects=>@ancestors)
   end
  
   def create
@@ -72,6 +77,11 @@ redirect_back_or_default('/')
 
 protected
   def find_user
-    @user = User.find_by_login(params[:id])
+    @user = User.find_by_login(params[:id] || params[:user_id]) 
+  end
+  
+  def admin_required
+    flash[:notice] = "That action is not to be taken!"
+    redirect_to root_url
   end
 end
