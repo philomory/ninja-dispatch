@@ -29,7 +29,7 @@ class Views::Layouts::Application < Erector::Widgets::Page
   end
   
   def render_content
-    text raw @template_content
+    rawtext @template_content
   end
   
 end
