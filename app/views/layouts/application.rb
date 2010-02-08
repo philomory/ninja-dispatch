@@ -2,6 +2,8 @@ class Erector::Widget
   include ActionController::UrlWriter
 end
 
+Erector::Widget.prettyprint_default = true
+
 class Views::Layouts::Application < Erector::Widgets::Page
   
   attr_accessor :template_content
