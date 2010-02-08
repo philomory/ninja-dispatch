@@ -19,18 +19,20 @@ class User < ActiveRecord::Base
   validates_uniqueness_of   :email
   validates_format_of       :email,    :with => Authentication.email_regex, :message => Authentication.bad_email_message
 
-  has_many :ninjas, :conditions => {:active => true}
+  has_many :ninjas
+  has_many :active_ninjas, :class_name => "Ninja", :conditions => {:active => true}
   has_many :ancestors, :class_name => "Ninja", :conditions => {:active => false}
-  has_many :past_and_present_ninjas, :class_name => "Ninja"
+  
+  alias_method :inactive_ninjas, :ancestors
   
   validate :ninja_overflow
   
   def ninja_overflow(*args)
-    errors.add_to_base("Too many ninjas") if ninjas.count > 3
+    errors.add_to_base("Too many ninjas") if active_ninjas.count > 3
   end
   
   def room_for_more?
-    return (ninjas.count < 3)
+    return (active_ninjas.count < 3)
   end
   
   # This is used so that url helpers use the login rather than the id.

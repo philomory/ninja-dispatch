@@ -4,7 +4,7 @@ class Views::Users::Show < Views::Layouts::Application
     h1 "Profile for #{@user.login}"
 
     div :class => 'ninjas' do
-      @user.ninjas.each do |ninja|
+      @user.active_ninjas.each do |ninja|
         div :class => :ninja, :id => ninja.id do
           link_to ninja.name, ninja
         end
@@ -16,7 +16,7 @@ class Views::Users::Show < Views::Layouts::Application
       end
     end
     br
-    link_to "Ancestors", @parent.user_ancestors_url(@user)
+    link_to "Hall of Ancestors", @parent.user_ancestors_url(@user)
     
   end
 end

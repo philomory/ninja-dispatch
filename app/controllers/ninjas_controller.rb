@@ -14,11 +14,11 @@ class NinjasController < ApplicationController
   end
 
   def new
-    @ninja = @user.ninjas.build
+    @ninja = @user.active_ninjas.build
   end
   
   def create
-    @ninja = @user.ninjas.build(params[:ninja])
+    @ninja = @user.active_ninjas.build(params[:ninja])
     
     if @ninja.save
       redirect_to ninja_url(@ninja)
