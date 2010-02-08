@@ -6,6 +6,14 @@ class UsersController; def rescue_action(e) raise e end; end
 
 class UsersControllerTest < ActionController::TestCase
 
+  fixtures :users
+
+  def setup
+    @controller = UsersController.new
+    @request = ActionController::TestRequest.new
+    @response = ActionController::TestResponse.new
+  end
+
   def test_should_allow_signup
     assert_difference 'User.count' do
       create_user
@@ -59,7 +67,7 @@ class UsersControllerTest < ActionController::TestCase
   end
 
   def test_should_activate_user
-    assert_nil User.authenticate('aaron', 'test')
+    assert_nil User.authenticate('aaron', 'testing')
     get :activate, :activation_code => users(:aaron).activation_code
     assert_redirected_to '/session/new'
     assert_not_nil flash[:notice]

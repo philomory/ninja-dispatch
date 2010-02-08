@@ -6,9 +6,16 @@ class SessionsController; def rescue_action(e) raise e end; end
 
 class SessionsControllerTest < ActionController::TestCase
 
+  fixtures :users
+
+  def setup
+    @controller = SessionsController.new
+    @request = ActionController::TestRequest.new
+    @response = ActionController::TestResponse.new
+  end
+
   def test_should_login_and_redirect
-    user = User.make    
-    post :create, :login => user.login, :password => user.password
+    post :create, :login => 'quentin', :password => 'testing'
     assert session[:user_id]
     assert_response :redirect
   end
@@ -20,62 +27,57 @@ class SessionsControllerTest < ActionController::TestCase
   end
 
   def test_should_logout
-    log_in
+    login_as :quentin
     get :destroy
     assert_nil session[:user_id]
     assert_response :redirect
   end
 
   def test_should_remember_me
-    user = User.make    
-    @request.cookies["auth_token"] = nil
-    post :create, :login => user.login, :password => user.password, :remember_me => "1"
+    post :create, :login => 'quentin', :password => 'testing', :remember_me => "1"
     assert_not_nil @response.cookies["auth_token"]
   end
 
   def test_should_not_remember_me
     @request.cookies["auth_token"] = nil
-    post :create, :login => 'quentin', :password => 'monkey', :remember_me => "0"
+    post :create, :login => 'quentin', :password => 'testing', :remember_me => "0"
     assert @response.cookies["auth_token"].blank?
   end
-  
+
   def test_should_delete_token_on_logout
-    log_in
+    login_as :quentin
     get :destroy
     assert @response.cookies["auth_token"].blank?
   end
 
   def test_should_login_with_cookie
-    user = User.make
-    user.remember_me
-    @request.cookies["auth_token"] = cookie_for(user)
+    users(:quentin).remember_me
+    @request.cookies["auth_token"] = cookie_for(users(:quentin))
     get :new
     assert @controller.send(:logged_in?)
   end
 
   def test_should_fail_expired_cookie_login
-    user = User.make    
-    user.remember_me
-    user.update_attribute :remember_token_expires_at, 5.minutes.ago
-    @request.cookies["auth_token"] = cookie_for(user)
+    users(:quentin).remember_me
+    users(:quentin).update_attribute :remember_token_expires_at, 5.minutes.ago
+    @request.cookies["auth_token"] = cookie_for(users(:quentin))
     get :new
     assert !@controller.send(:logged_in?)
   end
 
   def test_should_fail_cookie_login
-    user = User.make    
-    user.remember_me
+    users(:quentin).remember_me
     @request.cookies["auth_token"] = auth_token('invalid_auth_token')
     get :new
     assert !@controller.send(:logged_in?)
   end
 
   protected
-    def auth_token(token)
-      CGI::Cookie.new('name' => 'auth_token', 'value' => token)
-    end
-    
-    def cookie_for(user)
-      auth_token user.remember_token
-    end
+  def auth_token(token)
+    CGI::Cookie.new('name' => 'auth_token', 'value' => token)
+  end
+
+  def cookie_for(user)
+    auth_token user.remember_token
+  end
 end

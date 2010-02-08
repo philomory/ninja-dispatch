@@ -1,5 +1,8 @@
 class UsersController < ApplicationController
-  sortable_table Ninja; undef :index
+  sortable_table Ninja
+  # Get rid of sortable_table's added index method, but only if it's defined (it isn't in testing)
+  undef :index if self.method_defined?(:index)
+  
   # Protect these actions behind an admin login
   before_filter :admin_required, :only => [:suspend, :unsuspend, :destroy, :purge]
   before_filter :find_user, :only => [:suspend, :unsuspend, :destroy, :purge, :show, :ancestors]

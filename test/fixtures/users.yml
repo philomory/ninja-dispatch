@@ -1,0 +1,19 @@
+quentin:
+  id: 1
+  login: quentin
+  email: quentin@example.com
+  salt: 2025599d1c461f8141b8926763d69eb0098be1eb
+  crypted_password: 240fe9ed6431eb56a01c41385c9bea876d4418a0 # testing
+  created_at: <%= 5.days.ago.to_s :db %>
+  state: active
+ 
+ 
+ 
+aaron:
+  id: 2
+  login: aaron
+  email: aaron@example.com
+  salt: 2025599d1c461f8141b8926763d69eb0098be1eb
+  crypted_password: 240fe9ed6431eb56a01c41385c9bea876d4418a0 # testing
+  created_at: <%= 1.days.ago.to_s :db %>
+  state: active
