@@ -1,5 +1,4 @@
 require File.dirname(__FILE__) + '/../test_helper'
-require 'ruby_debug'
 
 class UserTest < ActiveSupport::TestCase
 
@@ -66,7 +65,6 @@ class UserTest < ActiveSupport::TestCase
   end
 
   def test_should_authenticate_user  
-    debugger
     assert_equal users(:quentin), User.authenticate('quentin', 'testing')
   end
 

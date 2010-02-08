@@ -69,9 +69,9 @@ class UsersControllerTest < ActionController::TestCase
   def test_should_activate_user
     assert_nil User.authenticate('aaron', 'testing')
     get :activate, :activation_code => users(:aaron).activation_code
-    assert_redirected_to '/session/new'
+    assert_redirected_to '/login'
     assert_not_nil flash[:notice]
-    assert_equal users(:aaron), User.authenticate('aaron', 'monkey')
+    assert_equal users(:aaron), User.authenticate('aaron', 'testing')
   end
   
   def test_should_not_activate_user_without_key
