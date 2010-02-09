@@ -1,8 +1,9 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class UserTest < ActiveSupport::TestCase
-
-  fixtures :users
+  # Be sure to include AuthenticatedTestHelper in test/test_helper.rb instead.
+  # Then, you can remove it from this and the functional test.
+  include AuthenticatedTestHelper
 
   def test_should_create_user
     assert_difference 'User.count' do
@@ -53,30 +54,31 @@ class UserTest < ActiveSupport::TestCase
   end
 
   def test_should_reset_password
-    user = users(:quentin)
+    user = User.make
     user.update_attributes(:password => 'new password', :password_confirmation => 'new password')
     assert_equal user, User.authenticate(user.login, 'new password')
   end
 
   def test_should_not_rehash_password
-    user = users(:quentin)    
+    user = User.make    
     user.update_attributes(:login => 'quentin2')
-    assert_equal user, User.authenticate('quentin2', 'testing')
+    assert_equal user, User.authenticate('quentin2', user.password)
   end
 
-  def test_should_authenticate_user  
-    assert_equal users(:quentin), User.authenticate('quentin', 'testing')
+  def test_should_authenticate_user
+    user = User.make    
+    assert_equal user, User.authenticate(user.login, user.password)
   end
 
   def test_should_set_remember_token
-    user = users(:quentin)    
+    user = User.make    
     user.remember_me
     assert_not_nil user.remember_token
     assert_not_nil user.remember_token_expires_at
   end
 
   def test_should_unset_remember_token
-    user = users(:quentin)    
+    user = User.make    
     user.remember_me
     assert_not_nil user.remember_token
     user.forget_me
@@ -84,7 +86,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   def test_should_remember_me_for_one_week
-    user = users(:quentin)    
+    user = User.make    
     before = 1.week.from_now.utc
     user.remember_me_for 1.week
     after = 1.week.from_now.utc
@@ -95,7 +97,7 @@ class UserTest < ActiveSupport::TestCase
 
   def test_should_remember_me_until_one_week
     time = 1.week.from_now.utc
-    user = users(:quentin)    
+    user = User.make    
     user.remember_me_until time
     assert_not_nil user.remember_token
     assert_not_nil user.remember_token_expires_at
@@ -104,7 +106,7 @@ class UserTest < ActiveSupport::TestCase
 
   def test_should_remember_me_default_two_weeks
     before = 2.weeks.from_now.utc
-    user = users(:quentin)    
+    user = User.make    
     user.remember_me
     after = 2.weeks.from_now.utc
     assert_not_nil user.remember_token
@@ -121,19 +123,19 @@ class UserTest < ActiveSupport::TestCase
   end
 
   def test_should_suspend_user
-    user = users(:quentin)    
+    user = User.make    
     user.suspend!
     assert user.suspended?
   end
 
   def test_suspended_user_should_not_authenticate
-    user = users(:quentin)    
+    user = User.make    
     user.suspend!
     assert_not_equal user, User.authenticate(user.login, user.password)
   end
 
   def test_should_unsuspend_user_to_active_state
-    user = users(:quentin)    
+    user = User.make    
     user.suspend!
     assert user.suspended?
     user.unsuspend!
@@ -141,7 +143,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   def test_should_unsuspend_user_with_nil_activation_code_and_activated_at_to_passive_state
-    user = users(:quentin)    
+    user = User.make    
     user.suspend!
     User.update_all :activation_code => nil, :activated_at => nil
     assert user.suspended?
@@ -150,7 +152,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   def test_should_unsuspend_user_with_activation_code_and_nil_activated_at_to_pending_state
-    user = users(:quentin)    
+    user = User.make    
     user.suspend!
     User.update_all :activation_code => 'foo-bar', :activated_at => nil
     assert user.suspended?
@@ -159,7 +161,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   def test_should_delete_user
-    user = users(:quentin)
+    user = User.make    
     assert_nil user.deleted_at
     user.delete!
     assert_not_nil user.deleted_at
