@@ -1,0 +1,28 @@
+<p>
+  <b>State:</b>
+  <%=h @mission.state %>
+</p>
+
+<p>
+  <b>Progress:</b>
+  <%=h @mission.progress %>
+</p>
+
+<p>
+  <b>Message:</b>
+  <%=h @mission.message %>
+</p>
+
+<p>
+  <b>Ninja:</b>
+  <%=h @mission.ninja %>
+</p>
+
+<p>
+  <b>Victim:</b>
+  <%=h @mission.victim %>
+</p>
+
+
+<%= link_to 'Edit', edit_mission_path(@mission) %> |
+<%= link_to 'Back', missions_path %>

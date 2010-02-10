@@ -1,0 +1,31 @@
+<h1>New mission</h1>
+
+<% form_for(@mission) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :state %><br />
+    <%= f.text_field :state %>
+  </p>
+  <p>
+    <%= f.label :progress %><br />
+    <%= f.text_field :progress %>
+  </p>
+  <p>
+    <%= f.label :message %><br />
+    <%= f.text_area :message %>
+  </p>
+  <p>
+    <%= f.label :ninja %><br />
+    <%= f.text_field :ninja %>
+  </p>
+  <p>
+    <%= f.label :victim %><br />
+    <%= f.text_field :victim %>
+  </p>
+  <p>
+    <%= f.submit 'Create' %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', missions_path %>

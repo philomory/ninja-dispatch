@@ -1,0 +1,28 @@
+<h1>Listing missions</h1>
+
+<table>
+  <tr>
+    <th>State</th>
+    <th>Progress</th>
+    <th>Message</th>
+    <th>Ninja</th>
+    <th>Victim</th>
+  </tr>
+
+<% @missions.each do |mission| %>
+  <tr>
+    <td><%=h mission.state %></td>
+    <td><%=h mission.progress %></td>
+    <td><%=h mission.message %></td>
+    <td><%=h mission.ninja %></td>
+    <td><%=h mission.victim %></td>
+    <td><%= link_to 'Show', mission %></td>
+    <td><%= link_to 'Edit', edit_mission_path(mission) %></td>
+    <td><%= link_to 'Destroy', mission, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New mission', new_mission_path %>
