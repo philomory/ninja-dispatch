@@ -9,7 +9,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100128065147) do
+ActiveRecord::Schema.define(:version => 20100210204208) do
+
+  create_table "missions", :force => true do |t|
+    t.string   "state"
+    t.text     "message"
+    t.integer  "ninja_id"
+    t.integer  "victim_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "ninjas", :force => true do |t|
     t.string   "name"
