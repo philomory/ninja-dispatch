@@ -12,3 +12,8 @@ User.blueprint do
   state { 'active' }
 end
 
+Ninja.blueprint do
+  user  { User.make }
+  name  { 'Ninja ' + Faker::Name.first_name }
+end
+
