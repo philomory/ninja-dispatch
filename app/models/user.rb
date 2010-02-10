@@ -22,7 +22,8 @@ class User < ActiveRecord::Base
   has_many :ninjas
   has_many :active_ninjas, :class_name => "Ninja", :conditions => {:active => true}
   has_many :ancestors, :class_name => "Ninja", :conditions => {:active => false}
-  has_many :missions_he_is_victim_of, :class_name => "Mission", :foreign_key => :victim_id
+  has_many :attacking_missions, :through => :ninjas, :source => :missions
+  has_many :defending_missions, :class_name => "Mission", :foreign_key => :victim_id
   
   
   alias_method :inactive_ninjas, :ancestors
