@@ -13,7 +13,13 @@ User.blueprint do
 end
 
 Ninja.blueprint do
-  user  { User.make }
+  user
   name  { 'Ninja ' + Faker::Name.first_name }
+end
+
+Mission.blueprint do
+  ninja
+  victim { User.make }
+  message { Faker::Lorem.sentences }
 end
 
