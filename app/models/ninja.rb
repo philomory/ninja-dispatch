@@ -1,5 +1,6 @@
 class Ninja < ActiveRecord::Base
   belongs_to :user
+  has_many :missions
   validates_presence_of :user_id, :name
   validate_on_create :user_has_room?
   before_validation_on_create :new_ninja_is_always_active
