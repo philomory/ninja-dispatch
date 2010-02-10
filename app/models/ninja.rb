@@ -1,8 +1,8 @@
 class Ninja < ActiveRecord::Base
   belongs_to :user
   validates_presence_of :user, :name
-  validates_associated :user
-  after_validation_on_create :new_ninja_is_always_active
+  validate_on_create :user_has_room?
+  before_validation_on_create :new_ninja_is_always_active
   
   def self.find_active(id, options={})
     self.with_scope(options) do
@@ -30,4 +30,7 @@ class Ninja < ActiveRecord::Base
     self.active = true
   end
   
+  def user_has_room?
+    errors.add_to_base("Too many ninjas") unless self.user.room_for_more?
+  end
 end
