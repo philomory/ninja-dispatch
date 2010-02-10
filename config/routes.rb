@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :missions
+
   map.activate '/activate/:activation_code', :action => 'activate', :activation_code => '', :controller => 'users'
   map.logout '/logout', :action => 'destroy', :controller => 'sessions'
   map.login '/login', :action => 'new', :controller => 'sessions'

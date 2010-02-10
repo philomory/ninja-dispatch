@@ -1,6 +1,6 @@
 class Ninja < ActiveRecord::Base
   belongs_to :user
-  validates_presence_of :user, :name
+  validates_presence_of :user_id, :name
   validate_on_create :user_has_room?
   before_validation_on_create :new_ninja_is_always_active
   
@@ -31,6 +31,10 @@ class Ninja < ActiveRecord::Base
   end
   
   def user_has_room?
-    errors.add_to_base("Too many ninjas") unless self.user.room_for_more?
+    # Only run *this* validation if the user is present; if not, the 
+    # validates_presence_of :user_id will fail instead.
+    if self.user.present?
+      errors.add_to_base("Too many ninjas") unless self.user.room_for_more? 
+    end
   end
 end

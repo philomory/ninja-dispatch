@@ -16,4 +16,10 @@ class NinjaTest < ActiveSupport::TestCase
     ninja.retire!
     assert !ninja.active?
   end
+  
+  test "a ninja without a user shouldn't be allowed" do
+    assert_raises(ActiveRecord::RecordInvalid) do
+      Ninja.make(:user => nil)
+    end
+  end
 end
