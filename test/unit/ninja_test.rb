@@ -27,6 +27,11 @@ class NinjaTest < ActiveSupport::TestCase
     user = User.make
     ninja = Ninja.make(:user => user)
     ninja.user = User.make
+    
+    # because attr_readonly only takes effect at the database,
+    # not in the model
+    ninja.save; ninja.reload
+    
     assert_equal user, ninja.user
   end
 end

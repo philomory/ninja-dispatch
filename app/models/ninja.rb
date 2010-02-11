@@ -4,6 +4,7 @@ class Ninja < ActiveRecord::Base
   validates_presence_of :user_id, :name
   validate_on_create :user_has_room?
   before_validation_on_create :new_ninja_is_always_active
+  attr_readonly :user_id
   
   def self.find_active(id, options={})
     self.with_scope(options) do

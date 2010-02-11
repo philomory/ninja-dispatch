@@ -43,7 +43,7 @@ class MissionTest < ActiveSupport::TestCase
     %w{succeeded failed}.each do |state|
       mission = Mission.make
       mission.state = state
-      assert_no_difference(lambda{mission.progress}) do
+      assert_no_difference('mission.progress') do
         mission.tick
       end
     end
