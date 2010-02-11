@@ -2,6 +2,8 @@ class Mission < ActiveRecord::Base
   belongs_to :ninja
   belongs_to :victim, :class_name => "User "#in english, 'has a', but the foreign key belongs here.
   
+  validates_presence_of :ninja_id, :victim_id
+  
   include AASM
   aasm_column :state
   aasm_initial_state :in_progress
@@ -21,6 +23,7 @@ class Mission < ActiveRecord::Base
   
   protected
   def step
+    return unless self.in_progress?
     if self.passes_test?
       self.progress += 1
     else
