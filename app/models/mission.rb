@@ -23,6 +23,9 @@ class Mission < ActiveRecord::Base
   def step  
   end
   
+  def finished?
+  end
+  
   def mission_complete
   end
   
