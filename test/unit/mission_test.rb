@@ -28,23 +28,27 @@ class MissionTest < ActiveSupport::TestCase
     end
   end
   
-  test "a successful mission should remain successful after a tick" do
-    mission = Mission.make
-    mission.state = 'succeeded'
-    10.times do
-      mission.tick
-      assert mission.succeeded?
+  test "a successful or failed mission should remain the same after a tick" do
+    %w{succeeded failed}.each do |state|
+      mission = Mission.make
+      mission.state = state
+      10.times do
+        mission.tick
+        assert mission.state == state
+      end
     end
   end
   
-  test "a failed mission should remain failed after a tick" do
-    mission = Mission.make
-    mission.state = 'failed'
-    10.times do
-      mission.tick
-      assert mission.failed?
+  test "successful and failed missions should not progress during ticks" do
+    %w{succeeded failed}.each do |state|
+      mission = Mission.make
+      mission.state = state
+      assert_no_difference(lambda{mission.progress}) do
+        mission.tick
+      end
     end
   end
+  
   
   
 end
