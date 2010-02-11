@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100211003704) do
+ActiveRecord::Schema.define(:version => 20100211230717) do
 
   create_table "missions", :force => true do |t|
     t.string   "state"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(:version => 20100211003704) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "progress",   :default => 0
+    t.integer  "momentum",   :default => 0
   end
 
   create_table "ninjas", :force => true do |t|
