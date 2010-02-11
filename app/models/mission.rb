@@ -7,11 +7,11 @@ class Mission < ActiveRecord::Base
   aasm_initial_state :in_progress
   
   aasm_state :in_progress
-  aasm_state :success, :enter => :mission_complete
+  aasm_state :succeeded, :enter => :mission_complete
   aasm_state :failed, :enter => :mission_failed
   
-  aasm_event :tick, :before => :step do
-    transitions :from => :in_progress, :to => :success, :guard => :finished?
+  aasm_event :tick, :before => :step, :error => :skip do
+    transitions :from => :in_progress, :to => :succeeded, :guard => :finished?
     transitions :from => :in_progress, :to => :in_progress
   end
   
@@ -28,6 +28,10 @@ class Mission < ActiveRecord::Base
     end
   end
   
+  def skip(e)
+    raise(e) unless e.is_a?(AASM::InvalidTransition)
+  end
+  
   def finished?
   end
   
@@ -42,7 +46,7 @@ class Mission < ActiveRecord::Base
   end
   
   def test
-    return !(rand(10) == 0)
+    return rand(10) == 0
   end
 
 end
