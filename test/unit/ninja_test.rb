@@ -22,4 +22,11 @@ class NinjaTest < ActiveSupport::TestCase
       Ninja.make(:user => nil)
     end
   end
+  
+  test "it should not be possible to change a ninja's user" do
+    user = User.make
+    ninja = Ninja.make(:user => user)
+    ninja.user = User.make
+    assert_equal user, ninja.user
+  end
 end
