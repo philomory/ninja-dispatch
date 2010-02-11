@@ -28,4 +28,23 @@ class MissionTest < ActiveSupport::TestCase
     end
   end
   
+  test "a successful mission should remain successful after a tick" do
+    mission = Mission.make
+    mission.state = 'succeeded'
+    10.times do
+      mission.tick
+      assert mission.succeeded?
+    end
+  end
+  
+  test "a failed mission should remain failed after a tick" do
+    mission = Mission.make
+    mission.state = 'failed'
+    10.times do
+      mission.tick
+      assert mission.failed?
+    end
+  end
+  
+  
 end
