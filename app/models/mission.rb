@@ -20,7 +20,12 @@ class Mission < ActiveRecord::Base
   end
   
   protected
-  def step  
+  def step
+    if self.passes_test?
+      self.progress += 1
+    else
+      self.fail
+    end
   end
   
   def finished?
@@ -32,4 +37,12 @@ class Mission < ActiveRecord::Base
   def mission_failed
   end
   
+  def passes_test?
+    return !!self.test
+  end
+  
+  def test
+    return !(rand(10) == 0)
+  end
+
 end

@@ -10,10 +10,21 @@ class MissionTest < ActiveSupport::TestCase
     assert Mission.make.progress.zero?
   end
   
-  test "a mission tick should adjust progress" do
-    mission = Mission.make
-    assert_difference('mission.progress') do
+  test "a mission tick should adjust progress or cause failure" do
+    10.times do
+      mission = Mission.make
       mission.tick
+      assert (mission.progress == 1 or mission.failed?)
+    end
+  end
+  
+  test "a mission should either succeed or fail by the 3rd tick" do
+    5.times do
+      mission = Mission.make
+      3.times do
+        mission.tick
+      end
+      assert (mission.succeeded? or mission.failed?)
     end
   end
   
