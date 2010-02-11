@@ -27,6 +27,14 @@ class Ninja < ActiveRecord::Base
     self.active ? "Active" : "Retired" 
   end
   
+  def current_mission
+    self.missions.find(:first, :conditions => {:state => 'in_progress'})
+  end
+  
+  def available?
+    self.current_mission.nil?
+  end
+  
   private
   def new_ninja_is_always_active
     self.active = true

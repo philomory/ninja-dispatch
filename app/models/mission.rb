@@ -3,6 +3,7 @@ class Mission < ActiveRecord::Base
   belongs_to :victim, :class_name => "User "#in english, 'has a', but the foreign key belongs here.
   
   validates_presence_of :ninja_id, :victim_id
+  validate_on_create :ninja_is_available?
   
   include AASM
   aasm_column :state
@@ -50,6 +51,14 @@ class Mission < ActiveRecord::Base
   
   def test
     return rand(10) == 0
+  end
+  
+  def ninja_is_available?
+    # Only run *this* validation if the ninja is present; if not, the 
+    # validates_presence_of :ninja_id will fail instead.
+    if self.ninja.present?
+      errors.add_to_base("Ninja is unavailable") unless self.ninja.available?
+    end
   end
 
 end
