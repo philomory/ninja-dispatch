@@ -9,7 +9,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100211230717) do
+ActiveRecord::Schema.define(:version => 20100214214735) do
+
+  create_table "challenges", :force => true do |t|
+    t.integer  "mission_id"
+    t.integer  "index"
+    t.string   "state",      :default => "in_progress"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "missions", :force => true do |t|
     t.string   "state"
