@@ -12,33 +12,33 @@ class MissionTest < ActiveSupport::TestCase
   test "a new mission should be in_progress" do
     assert Mission.make.in_progress?
   end
-  
+
   test "a new mission should have a progress of 0" do
     assert Mission.make.progress.zero?
   end
-  
-  test "a mission tick should adjust progress or cause failure" do
-    results = []
-    10.times do
-      mission = Mission.make
+
+  test "a mission tick should increment progress" do
+    mission = Mission.make
+    assert_difference('mission.progress') do
       mission.tick
-      results << mission
     end
-    assert results.all? {|mission| mission.progress == 1 or mission.failed?}
+  end
+
+  test "a mission should reach final_stage or fail after 4 ticks" do
+    mission = Mission.make
+    4.times do
+      mission.tick
+    end
+    assert ( mission.final_stage? || mission.failed? )
   end
   
-  test "a mission should either succeed or fail by the 3rd tick" do
-    results = []
-    5.times do
-      mission = Mission.make
-      3.times do
-        mission.tick
-      end
-      results << mission
-    end
-    assert results.all? {|mission| mission.succeeded? or mission.failed? }
+  test "a mission in the final stage should succeed or fail in the next tick" do
+    mission = Mission.make
+    mission.state = 'final_stage'
+    mission.tick
+    assert ( mission.succeeded? || mission.failed? )
   end
-  
+
   test "a successful or failed mission should remain the same after a tick" do
     %w{succeeded failed}.each do |state|
       mission = Mission.make
@@ -49,7 +49,7 @@ class MissionTest < ActiveSupport::TestCase
       end
     end
   end
-  
+
   test "successful and failed missions should not progress during ticks" do
     %w{succeeded failed}.each do |state|
       mission = Mission.make
@@ -61,7 +61,7 @@ class MissionTest < ActiveSupport::TestCase
       end
     end
   end
-  
-  
-  
+
+
+
 end
