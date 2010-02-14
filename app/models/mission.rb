@@ -38,7 +38,7 @@ class Mission < ActiveRecord::Base
   end
   
   def ready_for_challenge?
-    self.in_progress? and self.current_mission.nil?
+    self.in_progress? and self.current_challenge.nil?
   end
   
   protected
