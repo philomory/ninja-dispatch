@@ -1,6 +1,8 @@
 class Mission < ActiveRecord::Base
   belongs_to :ninja
   belongs_to :victim, :class_name => "User "#in english, 'has a', but the foreign key belongs here.
+  has_many :challenges
+  
   
   validates_presence_of :ninja_id, :victim_id
   validate_on_create :ninja_is_available?
@@ -29,6 +31,14 @@ class Mission < ActiveRecord::Base
   
   aasm_event :fail do
     transitions :from => [:in_progress,:final_state], :to => :failed
+  end
+  
+  def current_challenge
+    self.challenges.find(:first, :conditions => {:state => 'in_progress'})
+  end
+  
+  def ready_for_challenge?
+    self.in_progress? and self.current_mission.nil?
   end
   
   protected

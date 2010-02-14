@@ -3,7 +3,7 @@ class CreateChallenges < ActiveRecord::Migration
     create_table :challenges do |t|
       t.belongs_to :mission
       t.integer :index
-      t.string :state
+      t.string :state, :default => 'in_progress'
 
       t.timestamps
     end
