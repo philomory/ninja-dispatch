@@ -23,3 +23,7 @@ Mission.blueprint do
   message { Faker::Lorem.sentences }
 end
 
+Challenge.blueprint do
+  mission
+  index {(mission.challenges.max {|a,b| a.index <=> b.index}) + 1 rescue 0 }
+end
