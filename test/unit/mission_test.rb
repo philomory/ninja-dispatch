@@ -23,14 +23,6 @@ class MissionTest < ActiveSupport::TestCase
       mission.tick
     end
   end
-
-  test "a mission should reach final_stage or fail after 4 ticks" do
-    mission = Mission.make
-    4.times do
-      mission.tick
-    end
-    assert ( mission.final_stage? || mission.failed? )
-  end
   
   test "a mission in the final stage should succeed or fail in the next tick" do
     mission = Mission.make

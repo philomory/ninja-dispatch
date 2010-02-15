@@ -24,6 +24,6 @@ Mission.blueprint do
 end
 
 Challenge.blueprint do
-  mission
+  mission { m = Mission.make; m.current_challenge.destroy; m }
   index {(mission.challenges.max {|a,b| a.index <=> b.index}) + 1 rescue 0 }
 end

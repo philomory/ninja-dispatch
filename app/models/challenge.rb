@@ -7,15 +7,20 @@ class Challenge < ActiveRecord::Base
   validate_on_create :mission_is_ready?
   attr_readonly :mission_id, :index
   
-  def confront
+  def confront!
     raise ChallengeCompleteError unless self.state == 'in_progress'
+    result = self.calculate_result
+    self.state = result.to_s
+    self.save!
+    return result
+  end
+  
+  def calculate_result
     result = case rand(3)
     when 0 then :success
     when 1 then :failure
     when 2 then :no_change    
     end
-    self.state = result.to_s
-    return result
   end
   
   protected

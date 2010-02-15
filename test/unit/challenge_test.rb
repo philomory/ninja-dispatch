@@ -9,7 +9,7 @@ class ChallengeTest < ActiveSupport::TestCase
   test "confronting a challenge returns the state that's transitioned to" do
     5.times do
       challenge = Challenge.make
-      result = challenge.confront
+      result = challenge.confront!
       assert_equal result, challenge.state.intern
     end
   end

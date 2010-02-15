@@ -7,6 +7,8 @@ class Mission < ActiveRecord::Base
   validates_presence_of :ninja_id, :victim_id
   validate_on_create :ninja_is_available?
   
+  after_create :new_challenge
+  
   # If a subclass defines a STEPS_TO_FINAL constant, that will be
   # used. Otherwise, Mission's will be used.
   STEPS_TO_FINAL = 4
@@ -16,10 +18,10 @@ class Mission < ActiveRecord::Base
   aasm_column :state
   aasm_initial_state :in_progress
   
-  aasm_state :in_progress
+  aasm_state :in_progress, :after_enter => :new_challenge
   aasm_state :final_stage
-  aasm_state :succeeded, :enter => :mission_complete
-  aasm_state :failed, :enter => :mission_failed
+  aasm_state :succeeded, :after_enter => :mission_complete
+  aasm_state :failed, :after_enter => :mission_failed
   
   aasm_event :tick, :before => :step, :error => :skip do
     transitions :from => :in_progress, :to => :final_stage, :guard => :reached_final_stage?
@@ -42,21 +44,39 @@ class Mission < ActiveRecord::Base
   end
   
   protected
+  
+  def new_challenge
+    # Abort if we already have a challenge going.
+    raise ChallengeInProgressError unless current_challenge.nil?
+    
+    # We have to return on a new record because you can't create
+    # an associated record before you've saved the parent record.
+    # Instead, the creation of the first Challenge is done in a
+    # after_create hook.
+    return if new_record?
+    
+    # Find the first available index.
+    index = if self.challenges.empty?
+      0
+    else
+      self.challenges.map {|c| c.index}.max + 1
+    end
+    
+    self.challenges.create :index => index
+  end
+  
   def step
     return unless self.in_progress?
     self.progress += 1
-    self.standard_test
+    self.confront_challenge
     self.fail if self.momentum <= self.class.const_get(:IMMEDIATE_FAILURE_THRESHOLD)
   end
   
-  def standard_test
-    case rand(3)
-    when 0
-      self.momentum += 1
-    when 1
-      self.momentum -= 1
-    when 2
-       # No change    
+  def confront_challenge
+    case current_challenge.confront!
+    when :success then self.momentum += 1
+    when :failure then self.momentum -= 1
+    when :no_change # No change   
     end
   end
 
@@ -66,7 +86,6 @@ class Mission < ActiveRecord::Base
   
   def passed_final_test?
   end
-
   
   def final_test
   end
