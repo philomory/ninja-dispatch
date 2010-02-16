@@ -9,12 +9,13 @@ ActionController::Routing::Routes.draw do |map|
   
   # this is the options hash passed to map.resource :users, in a seperate line for readability.
   user_hash = {:except => :new, :member=>{:purge=>:delete, :unsuspend=>:put, :suspend=>:put}}
+  ninja_hash = {:member => {:retire    => :put}, :shallow => true, :except => :edit }
   
   # Here I'm repurposing :id, interpreting it as :login instead.
   map.resources :users, user_hash do |user|
-    user.resources :ninjas,:member      => {:retire    => :put},
-                           :shallow     => true,
-                           :except      => :edit
+    user.resources :ninjas, ninja_hash do |ninja|
+      ninja.resources :mission
+    end
                            
     user.ancestors '/ancestors', :controller => :users, :action => :ancestors
     user.ancestor  '/ancestors/:id', :controller => :ninjas, :action => :show              
