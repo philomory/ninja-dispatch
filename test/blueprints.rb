@@ -3,7 +3,7 @@ require 'sham'
 require 'faker'
 
 User.blueprint do
-  login { Faker::Name.first_name.downcase }
+  login { Faker::Name.first_name.downcase + rand(999).to_s }
   password 'testing'
   password_confirmation { password }
   email { Faker::Internet.email }
