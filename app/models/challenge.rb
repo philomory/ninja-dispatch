@@ -19,7 +19,7 @@ class Challenge < ActiveRecord::Base
     result = case rand(3)
     when 0 then :success
     when 1 then :failure
-    when 2 then :no_change    
+    when 2 then :no_change
     end
   end
   
