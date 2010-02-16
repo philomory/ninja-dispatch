@@ -2,7 +2,9 @@ class MissionsController < ApplicationController
   before_filter :check_logged_in, :except => [:show,:index]
   before_filter :find_ninja, :only => [:new, :create]
   before_filter :correct_user?, :only => [:new, :create]
+  before_filter :ninja_available?, :only => [:new, :create]
   
+
   # GET /missions
   # GET /missions.xml
   def index
@@ -28,7 +30,7 @@ class MissionsController < ApplicationController
   # GET /missions/new
   # GET /missions/new.xml
   def new
-    @mission = Mission.new
+    @mission = @ninja.missions.build
 
     respond_to do |format|
       format.html # new.html.erb
@@ -39,7 +41,7 @@ class MissionsController < ApplicationController
   # POST /missions
   # POST /missions.xml
   def create
-    @mission = Mission.new(params[:mission])
+    @mission = @ninja.missions.create(params[:mission])
 
     respond_to do |format|
       if @mission.save
@@ -65,5 +67,12 @@ class MissionsController < ApplicationController
     end
   end
 
+  def ninja_available?
+    unless @ninja.available?
+      flash[:notice] = "This ninja is already on a mission, and cannot be sent on a new one until " +
+                       "their current mission is completed."
+      redirect_to user_url(current_user)
+    end
+  end
 
 end

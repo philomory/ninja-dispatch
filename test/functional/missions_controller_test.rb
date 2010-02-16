@@ -1,6 +1,13 @@
 require 'test_helper'
 
 class MissionsControllerTest < ActionController::TestCase
+  
+  test "should show mission" do
+    get :show, :id => Mission.make.to_param
+    assert_response :success
+    assert_not_nil assigns(:mission)
+  end
+  
   test "should get index" do
     get :index
     assert_response :success
@@ -39,6 +46,16 @@ class MissionsControllerTest < ActionController::TestCase
     assert_not_nil flash[:notice]
   end
   
+  test "should not get new for a ninja already on a mission" do
+    log_in
+    ninja = Ninja.make(:user => current_user)
+    Mission.make(:ninja => ninja)
+    post :new, :ninja_id => ninja.to_param
+    
+    assert_redirected_to user_url(current_user)
+    assert_not_nil flash[:notice]
+  end
+  
   test "logged in, should create mission for own ninja" do
     log_in
     ninja = Ninja.make(:user => current_user)
@@ -61,10 +78,18 @@ class MissionsControllerTest < ActionController::TestCase
     assert_redirected_to user_url(current_user)
     assert_not_nil flash[:notice]
   end
-
-  test "should show mission" do
-    get :show, :id => Mission.make.to_param
-    assert_response :success
+  
+  test "should not create missin for a ninja already on a mission" do
+    log_in
+    ninja = Ninja.make(:user => current_user)
+    Mission.make(:ninja => ninja)
+    mission = Mission.plan(:ninja => ninja)
+    assert_no_difference('Mission.count') do
+      post :create, :mission => mission, :ninja_id => ninja.to_param
+    end
+    
+    assert_redirected_to user_url(current_user)
+    assert_not_nil flash[:notice]
   end
 
 end
