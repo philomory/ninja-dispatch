@@ -46,7 +46,6 @@ class User < ActiveRecord::Base
   # This makes find_by_login work like find in terms of errors.
   def self.find_by_login(passed_value,*args)
     if user = super
-      p user
       return user
     else
       raise ::ActiveRecord::RecordNotFound, "Couldn't find User with Name='#{passed_value}'"
