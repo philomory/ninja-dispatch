@@ -39,4 +39,8 @@ class ActiveSupport::TestCase
   
   require File.expand_path(File.dirname(__FILE__) + "/blueprints")
   
+  def current_user
+    User.find_by_id(@request.session[:user_id]) if @request.session[:user_id]
+  end
+  
 end
