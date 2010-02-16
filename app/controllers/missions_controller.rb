@@ -32,11 +32,6 @@ class MissionsController < ApplicationController
     end
   end
 
-  # GET /missions/1/edit
-  def edit
-    @mission = Mission.find(params[:id])
-  end
-
   # POST /missions
   # POST /missions.xml
   def create
@@ -54,32 +49,6 @@ class MissionsController < ApplicationController
     end
   end
 
-  # PUT /missions/1
-  # PUT /missions/1.xml
-  def update
-    @mission = Mission.find(params[:id])
 
-    respond_to do |format|
-      if @mission.update_attributes(params[:mission])
-        flash[:notice] = 'Mission was successfully updated.'
-        format.html { redirect_to(@mission) }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @mission.errors, :status => :unprocessable_entity }
-      end
-    end
-  end
 
-  # DELETE /missions/1
-  # DELETE /missions/1.xml
-  def destroy
-    @mission = Mission.find(params[:id])
-    @mission.destroy
-
-    respond_to do |format|
-      format.html { redirect_to(missions_url) }
-      format.xml  { head :ok }
-    end
-  end
 end
