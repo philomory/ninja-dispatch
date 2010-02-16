@@ -9,7 +9,11 @@ class NinjasController < ApplicationController
   end
 
   def retire
-    @ninja.retire!
+    if @ninja.user == current_user
+      @ninja.retire!
+    else
+      flash[:notice] = "You can't retire someone else's ninja!"
+    end
     redirect_to ninja_url(@ninja)
   end
 
@@ -19,17 +23,11 @@ class NinjasController < ApplicationController
   
   def create
     @ninja = @user.active_ninjas.build(params[:ninja])
-    
     if @ninja.save
       redirect_to ninja_url(@ninja)
     else
       render :action => 'new'
     end
-  end
-  
-  def ancestors
-    @user = User.find_by_login(params[:user_id])
-    @ancestors = @user.ancestors
   end
   
   private
