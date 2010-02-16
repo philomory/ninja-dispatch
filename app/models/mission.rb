@@ -85,9 +85,8 @@ class Mission < ActiveRecord::Base
   end
   
   def passed_final_test?
-  end
-  
-  def final_test
+    final_grade = rand(15) + momentum
+    return (final_grade >= 8)
   end
   
   def mission_complete
