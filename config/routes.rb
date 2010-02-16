@@ -14,7 +14,7 @@ ActionController::Routing::Routes.draw do |map|
   # Here I'm repurposing :id, interpreting it as :login instead.
   map.resources :users, user_hash do |user|
     user.resources :ninjas, ninja_hash do |ninja|
-      ninja.resources :mission
+      ninja.resources :missions
     end
                            
     user.ancestors '/ancestors', :controller => :users, :action => :ancestors
