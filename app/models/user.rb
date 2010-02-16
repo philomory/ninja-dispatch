@@ -6,6 +6,8 @@ class User < ActiveRecord::Base
   include Authentication::ByCookieToken
   include Authorization::AasmRoles
   
+  MAX_ACTIVE_NINJAS = 3
+  
   validates_presence_of     :login
   validates_length_of       :login,    :within => 3..40
   validates_uniqueness_of   :login
@@ -31,11 +33,11 @@ class User < ActiveRecord::Base
   validate :ninja_overflow
   
   def ninja_overflow(*args)
-    errors.add_to_base("Too many ninjas") if active_ninjas.count > 3
+    errors.add_to_base("Too many ninjas") if active_ninjas.count > MAX_ACTIVE_NINJAS
   end
   
   def room_for_more?
-    return (active_ninjas.count < 3)
+    return (active_ninjas.count < MAX_ACTIVE_NINJAS)
   end
   
   # This is used so that url helpers use the login rather than the id.
