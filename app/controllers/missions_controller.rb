@@ -1,8 +1,12 @@
 class MissionsController < ApplicationController
+  before_filter :check_logged_in, :except => [:show,:index]
+  before_filter :find_ninja, :only => [:new, :create]
+  before_filter :correct_user?, :only => [:new, :create]
+  
   # GET /missions
   # GET /missions.xml
   def index
-    @missions = Mission.all
+    @missions = Mission.all :conditions => {:state => [:succeeded, :failed]}
 
     respond_to do |format|
       format.html # index.html.erb
@@ -49,6 +53,17 @@ class MissionsController < ApplicationController
     end
   end
 
+  private
+  def find_ninja
+    @ninja = Ninja.find(params[:ninja_id])
+  end
+
+  def correct_user?
+    unless @ninja.user == current_user
+      flash[:notice] = "You can only send your own Ninjas on missions. Is that what you meant to do?"
+      redirect_to user_url(current_user)
+    end
+  end
 
 
 end

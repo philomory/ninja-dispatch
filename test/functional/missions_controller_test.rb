@@ -7,18 +7,59 @@ class MissionsControllerTest < ActionController::TestCase
     assert_not_nil assigns(:missions)
   end
 
-  test "should get new" do
-    get :new
-    assert_response :success
+  test "not logged in, should not get new" do
+    get :new, :ninja_id => Ninja.make.to_param
+    assert_redirected_to login_url
+    assert_not_nil flash[:notice] 
   end
 
-  test "should create mission" do
-    mission = Mission.plan
+  test "logged in, should get new for own ninja" do
+    log_in
+    ninja = Ninja.make(:user => current_user)
+    get :new, :ninja_id => ninja.to_param
+    assert_response :success
+    assert_nil flash[:notice]
+  end
+  
+  test "logged in, should not get new for other's ninja" do
+    log_in
+    get :new, :ninja_id => Ninja.make.to_param
+    assert_redirected_to user_url(current_user)
+    assert_not_nil flash[:notice]
+  end
+
+  test "not logged in, should not create mission" do
+    ninja = Ninja.make
+    mission = Mission.plan(:ninja => ninja)
+    assert_no_difference('Mission.count') do
+      post :create, :mission => mission, :ninja_id => ninja.to_param
+    end
+    
+    assert_redirected_to login_url
+    assert_not_nil flash[:notice]
+  end
+  
+  test "logged in, should create mission for own ninja" do
+    log_in
+    ninja = Ninja.make(:user => current_user)
+    mission = Mission.plan(:ninja => ninja)
     assert_difference('Mission.count') do
-      post :create, :mission => mission
+      post :create, :mission => mission, :ninja_id => ninja.to_param
     end
 
     assert_redirected_to mission_path(assigns(:mission))
+  end
+
+  test "logged in, should not create mission for other's ninja" do
+    log_in
+    ninja = Ninja.make
+    mission = Mission.plan(:ninja => ninja)
+    assert_no_difference('Mission.count') do
+      post :create, :mission => mission, :ninja_id => ninja.to_param
+    end
+    
+    assert_redirected_to user_url(current_user)
+    assert_not_nil flash[:notice]
   end
 
   test "should show mission" do
