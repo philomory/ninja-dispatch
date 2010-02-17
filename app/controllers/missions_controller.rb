@@ -48,7 +48,7 @@ class MissionsController < ApplicationController
   def create
     ninja = Ninja.find(params[:mission][:ninja_id])
     return unless correct_user?(ninja.user); return unless ninja_available?(ninja)
-
+    return unless victim_different_from_master?
 
     @mission = Mission.create(params[:mission])
 
@@ -100,5 +100,18 @@ class MissionsController < ApplicationController
     end
     return any_available
   end
+
+  def victim_different_from_master?
+    victim_id = params[:mission][:victim_id]
+    master_id = Ninja.find(params[:mission][:ninja_id]).user_id
+    different = (victim_id != master_id)
+    unless different
+      flash[:notice] = "You can't send one of your ninjas on a mission with " +
+                       "yourself as the victim!"
+      redirect_to new_mission_url
+    end
+    return different
+  end
+    
 
 end

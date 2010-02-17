@@ -5,7 +5,16 @@ class MissionTest < ActiveSupport::TestCase
   test "a new mission without a ninja or a victim should raise" do
     assert_raises(ActiveRecord::RecordInvalid) do
       Mission.make(:ninja => nil)
+    end
+    assert_raises(ActiveRecord::RecordInvalid) do
       Mission.make(:victim => nil)
+    end
+  end
+
+  test "a new mission cannot have its ninja's master as its victim" do
+    ninja = Ninja.make
+    assert_raises(ActiveRecord::RecordInvalid) do
+      Mission.make(:ninja => ninja, :victim => ninja.user)
     end
   end
 
@@ -53,7 +62,6 @@ class MissionTest < ActiveSupport::TestCase
       end
     end
   end
-
 
 
 end

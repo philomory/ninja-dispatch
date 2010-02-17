@@ -3,14 +3,16 @@ class Mission < ActiveRecord::Base
   belongs_to :victim, :class_name => "User "#in english, 'has a', but the foreign key belongs here.
   has_many :challenges
   
-  
+  attr_accessible :ninja_id, :victim_id, :message
+
   validates_presence_of :ninja_id, :victim_id
   validate_on_create :ninja_is_available?
+  validate_on_create :master_and_victim_different?
   
   after_create :new_challenge
   
-  # If a subclass defines a STEPS_TO_FINAL constant, that will be
-  # used. Otherwise, Mission's will be used.
+  # If a subclass defines a STEPS_TO_FINAL constant, that will be used. 
+  # Otherwise, Mission's will be used. Likewise for IMMEDIATE_FAILURE_THRESHOLD.
   STEPS_TO_FINAL = 4
   IMMEDIATE_FAILURE_THRESHOLD = -2
   
@@ -104,6 +106,14 @@ class Mission < ActiveRecord::Base
     # validates_presence_of :ninja_id will fail instead.
     if self.ninja.present?
       errors.add_to_base("Ninja is unavailable") unless self.ninja.available?
+    end
+  end
+  
+  def master_and_victim_different?
+    # Only run *this* validation if the ninja and victim are present;
+    # if not, the appropriate validates_presence_of will fail instead.
+    if self.ninja.present? and self.victim.present?
+      errors.add_to_base("Ninja cannot go on a mission targeting its master") unless (ninja.user != victim)
     end
   end
 

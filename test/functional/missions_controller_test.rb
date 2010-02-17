@@ -121,5 +121,35 @@ class MissionsControllerTest < ActionController::TestCase
     assert_redirected_to user_url(current_user)
     assert_not_nil flash[:notice]
   end
+  
+  test "should not create mission with non-default state" do
+    log_in
+    ninja = Ninja.make(:user => current_user)
+    mission = Mission.plan(:ninja => ninja)
+    mission[:state] = 'succeeded'
+    post :create, :mission => mission
+    assert_equal 'in_progress', Mission.last.state
+  end
+  
+  test "should not create mission with non-default progress" do
+    log_in
+    ninja = Ninja.make(:user => current_user)
+    mission = Mission.plan(:ninja => ninja)
+    mission[:progress] = 100
+    post :create, :mission => mission
+    assert_equal 0, Mission.last.progress
+  end
+
+  test "should not allow user to create mission targetting themself" do
+    log_in
+    ninja = Ninja.make(:user => current_user)
+    mission = Mission.plan(:ninja => ninja, :victim => current_user)
+    
+    assert_no_difference('Mission.count') do
+      post :create, :mission => mission
+    end
+    assert_redirected_to new_mission_url
+  end
+  
 
 end
